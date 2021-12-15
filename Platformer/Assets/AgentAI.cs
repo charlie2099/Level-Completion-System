@@ -5,13 +5,19 @@ using UnityEngine.AI;
 
 public class AgentAI : MonoBehaviour
 {
-    private NavMeshAgent agent;
-    [SerializeField] private Transform target;
+    [Header("Customisation")]
     [SerializeField] private float speed = 3.5f;
+    [Header("Goal Sequence")]
+    [SerializeField] private List<Transform> goal_item = new List<Transform>();
+
+    private NavMeshAgent agent;
+    private Transform target;
+    private int goal_index = 0;
 
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        target = goal_item[goal_index].transform;
     }
 
     private void Start()
@@ -21,8 +27,11 @@ public class AgentAI : MonoBehaviour
 
     private void Update()
     {
-        if (target == null) return;
-        agent.destination = target.position;
+        print("Goal index: " + goal_index);
+        print("Goal list count: " + goal_item.Count);
+        if (target == null && goal_index >= goal_item.Count) return;
+        
+        agent.destination = goal_item[goal_index].transform.position;
     }
 
     private void OnCollisionEnter(Collision col)
@@ -31,6 +40,7 @@ public class AgentAI : MonoBehaviour
         if(hit != null)
         {
             hit.Destroy();
+            goal_index++;
         }
     }
 }

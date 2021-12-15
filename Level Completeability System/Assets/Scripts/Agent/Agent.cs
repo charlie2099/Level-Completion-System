@@ -6,7 +6,7 @@ using Pathfinding;
 
 public class Agent : MonoBehaviour
 {
-    [Header("Pathfinding")]
+    /*[Header("Pathfinding")]
     public Transform target;
     public float activateDistance = 50f;
     public float pathUpdateSeconds = 0.5f;
@@ -119,7 +119,7 @@ public class Agent : MonoBehaviour
             path = p;
             currentWaypoint = 0;
         }
-    }
+    }*/
 
 
 
@@ -153,29 +153,32 @@ public class Agent : MonoBehaviour
 
 
 
-    /*public Transform target;
-    public float speed = 200.0F;
+    public Transform targetToFollow;
+    public float speed                = 200.0F;
     public float nextWaypointDistance = 3.0F;
 
-    Path path_;
-    int currentWaypoint = 0;
-    bool reachedEndOfPath = false;
-    Seeker seeker;
-    Rigidbody2D rb;
+    private Path path_;
+    private Seeker seeker;
+    private Rigidbody2D agent_rb;
+    private int currentWaypoint   = 0;
+    //private bool reachedEndOfPath = false;
+
+    private void Awake()
+    {
+        seeker = GetComponent<Seeker>();
+        agent_rb = GetComponent<Rigidbody2D>();
+    }
 
     private void Start()
     {
-        seeker = GetComponent<Seeker>();
-        rb = GetComponent<Rigidbody2D>();
-
-        InvokeRepeating("UpdatePath", 0, 0.5F);
+        InvokeRepeating("UpdatePath", 0, 0.5F); // recalculate path every half second
     }
 
     void UpdatePath()
     {
         if (seeker.IsDone())
         {
-            seeker.StartPath(rb.position, target.position, OnPathComplete);
+            seeker.StartPath(agent_rb.position, targetToFollow.position, OnPathComplete);
         }
     }
 
@@ -193,7 +196,7 @@ public class Agent : MonoBehaviour
         if (path_ == null)
             return;
 
-        if (currentWaypoint >= path_.vectorPath.Count)
+        /*if (currentWaypoint >= path_.vectorPath.Count)
         {
             reachedEndOfPath = true;
             return;
@@ -201,20 +204,20 @@ public class Agent : MonoBehaviour
         else
         {
             reachedEndOfPath = false;
-        }
+        }*/
 
-        Vector2 direction = ((Vector2)path_.vectorPath[currentWaypoint] - rb.position).normalized;
+        Vector2 direction = ((Vector2)path_.vectorPath[currentWaypoint] - agent_rb.position).normalized;
         Vector2 force = direction * speed * Time.deltaTime;
 
-        rb.AddForce(force);
+        agent_rb.AddForce(force);
 
-        float distance = Vector2.Distance(rb.position, path_.vectorPath[currentWaypoint]);
+        float distance = Vector2.Distance(agent_rb.position, path_.vectorPath[currentWaypoint]);
 
         if (distance < nextWaypointDistance)
         {
             currentWaypoint++;
         }
-    }*/
+    }
 
 
 

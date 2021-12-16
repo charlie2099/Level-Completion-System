@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Door : MonoBehaviour
 {
@@ -10,14 +9,6 @@ public class Door : MonoBehaviour
         if(Key.keysCollected == 2)
         {
             Destroy(gameObject);
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.CompareTag("Agent"))
-        {
-            SceneManager.LoadScene("Game");
         }
     }
 }

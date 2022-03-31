@@ -10,12 +10,14 @@ public class Door : MonoBehaviour, IDestroyable
     private Goal _goal;
     private NavMeshObstacle _navMeshObstacle;
     private MeshRenderer _meshRenderer;
-
+    private BoxCollider _collider;
+ 
     private void Awake()
     {
         _goal = GetComponent<Goal>();
         _navMeshObstacle = GetComponent<NavMeshObstacle>();
         _meshRenderer = GetComponent<MeshRenderer>();
+        _collider = GetComponent<BoxCollider>();
     }
 
     private void Update()
@@ -24,6 +26,7 @@ public class Door : MonoBehaviour, IDestroyable
         {
             _navMeshObstacle.enabled = false;
             _meshRenderer.enabled = false;
+            _collider.enabled = false;
             //Destroy();
         }
         

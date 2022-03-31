@@ -30,7 +30,6 @@ public class Goal : MonoBehaviour
                 return false;
             }
         }
- 
         return true;
     }
 }

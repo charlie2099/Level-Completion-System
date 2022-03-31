@@ -41,12 +41,10 @@ public class LevelTesterAgent : MonoBehaviour
 
     private void Update()
     {
-        print("Active goal index: " + _activeGoal);
-        print("Sub-goal index: " + _activeSubGoal);
-        
         if (_activeGoal < goalsList.Count)
         {
-            // For each sub-goal in the active goal, print it
+            print("Goals List count: " + goalsList.Count);
+            // For each sub-goal in the active goal
             for (int i = 0; i < goalsList[_activeGoal].subGoals.Count; i++)
             {
                 // If the active goals sub-goals are incomplete, 
@@ -57,7 +55,9 @@ public class LevelTesterAgent : MonoBehaviour
                 }
             }
         }
-
+        
+        print("Main: " + _activeGoal + " Sub: " + _activeSubGoal);
+        //print("Destination: " + goalsList[_activeGoal].subGoals[_activeSubGoal].goal.transform.gameObject.name);
     }
 
     private void OnCollisionEnter(Collision col)
@@ -73,11 +73,25 @@ public class LevelTesterAgent : MonoBehaviour
     private void IncrementGoalIndex(EventParam eventParam) 
     {
         _activeGoal++;
-        _activeSubGoal = 0; // reset sub goals count for each new goal
+        //_activeSubGoal = 0; // reset sub goals count for each new goal
+        //print("<color=cyan>Goal index: </color>" + _activeGoal);
     }
     
     private void IncrementSubGoalIndex(EventParam eventParam) 
     {
-        _activeSubGoal++;
+        if (_activeSubGoal < goalsList[_activeGoal].subGoals.Count)
+        {
+            _activeSubGoal++;
+        }
+        else
+        {
+            _activeSubGoal = 0;
+        }
+        
+        /*else if(_activeGoal < goalsList.Count)
+        {
+            _activeSubGoal = 0;
+        }*/
+        //print("<color=magenta>Sub-goal index: </color>" + _activeSubGoal);
     }
 }

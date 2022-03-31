@@ -1,18 +1,15 @@
 using UnityEngine;
-using Utility;
 
-public class Key : MonoBehaviour, IObjective
+namespace Level
 {
-    [HideInInspector] public static int keysCollected;
-
-    /*public void Destroy()
+    public class Key : MonoBehaviour/*, IGoal*/
     {
+        [HideInInspector] public static int keysCollected;
+
+        /*public void Destroy()
+        {
         Destroy(gameObject);
         keysCollected++;
-    }*/
-    
-    public void Collect()
-    {
-        Destroy(gameObject);
+        }*/
     }
 }

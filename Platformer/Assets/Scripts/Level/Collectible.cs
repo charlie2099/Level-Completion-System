@@ -1,10 +1,9 @@
 using UnityEngine;
-using Utility;
 
-public class Collectible : MonoBehaviour, IObjective
+namespace Level
 {
-    public void Collect()
+    public class Collectible : MonoBehaviour
     {
-        Destroy(gameObject);
+    
     }
 }

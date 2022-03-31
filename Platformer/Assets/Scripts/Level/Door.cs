@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Door : MonoBehaviour, IDestroyable
+public class Door : MonoBehaviour
 {
     private Goal _goal;
     private NavMeshObstacle _navMeshObstacle;
@@ -27,7 +27,6 @@ public class Door : MonoBehaviour, IDestroyable
             _navMeshObstacle.enabled = false;
             _meshRenderer.enabled = false;
             _collider.enabled = false;
-            //Destroy();
         }
         
         /*if(Key.keysCollected == 2)
@@ -46,9 +45,4 @@ public class Door : MonoBehaviour, IDestroyable
             }
         }
     }*/
-    
-    public void Destroy()
-    {
-        Destroy(gameObject);
-    }
 }

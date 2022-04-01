@@ -11,13 +11,15 @@ public class LevelTesterAgent : MonoBehaviour
     [Header("Attributes")]
     [SerializeField] private float speed = 3.5f;
     [Header("Goal Sequence")]
-    [SerializeField] private List<Goal> goalsList = new List<Goal>();
+    public List<Goal> goalsList = new List<Goal>();
 
     private NavMeshAgent _agent;
     private Transform _target;
-    private int _activeGoal;
-    private int _activeSubGoal;
-    private bool _allGoalsComplete;
+    [HideInInspector] public int _activeGoal;
+    [HideInInspector] public int _activeSubGoal;
+    [HideInInspector] public int goalsCompleted;
+    [HideInInspector] public int subGoalsCompleted;
+    [HideInInspector] public bool _allGoalsComplete;
     private bool _errorFound;
 
     private void OnEnable()
@@ -40,7 +42,7 @@ public class LevelTesterAgent : MonoBehaviour
     private void Start()
     {
         _agent.speed = speed;
-        InvokeRepeating("CheckIfAgentIsStuck", 1.0f, 3.0f);
+        InvokeRepeating(nameof(CheckIfAgentIsObstructed), 1.0f, 3.0f);
     }
 
     private void Update()
@@ -67,18 +69,10 @@ public class LevelTesterAgent : MonoBehaviour
             }
         }
 
-        /*if (_agent.velocity.magnitude < 0.05f)
-        {
-            print("Agent make be obstructed or cannot reach path");
-        }*/
-
         if (AllGoalsComplete() && !_allGoalsComplete)
         {
             EditorUtility.DisplayDialog("Level Completion System Logger", "Level is completeable!", "Ok");
-            
-            // Display time took the agent to complete it
-            // Write data to file reporting about any bugs found or suggesting improvements
-            
+            EditorApplication.isPlaying = false;
             _allGoalsComplete = true;
         }
     }
@@ -89,7 +83,7 @@ public class LevelTesterAgent : MonoBehaviour
         if (goal != null)
         {
             goalsList[_activeGoal].subGoals[_activeSubGoal].isCompleted = true;
-            goal.Collect();
+            goal.Complete();
         }
     }
 
@@ -105,23 +99,29 @@ public class LevelTesterAgent : MonoBehaviour
         return true;
     }
 
-    private void CheckIfAgentIsStuck()
+    private void CheckIfAgentIsObstructed()
     {
         if (_agent.velocity.magnitude < 0.05f && !_errorFound)
         {
+            /*EditorUtility.DisplayDialog("Level Completion System Logger", 
+                "[ERROR]: \n" +
+                "Agent cannot reach path, path may be obstructed. \n\n" + 
+                "Current [GOAL]: " + goalsList[_activeGoal].name + "\n" +
+                "Current [SUB-GOAL]: " + goalsList[_activeGoal].subGoals[_activeSubGoal].goal.name + "\n\n" +
+                "Suggested fix: ", "Ok");*/
+            
             EditorUtility.DisplayDialog("Level Completion System Logger", 
                 "[ERROR]: \n" +
                 "Agent cannot reach path, path may be obstructed. \n\n" + 
                 "Current [GOAL]: " + goalsList[_activeGoal].name + "\n" +
                 "Current [SUB-GOAL]: " + goalsList[_activeGoal].subGoals[_activeSubGoal].goal.name + "\n\n" +
-                "Suggested fix: ", "Ok");
+                "Suggested fix: \n" + goalsList[_activeGoal].subGoals[_activeSubGoal].goal.GetComponent<ErrorLog>().solutionText,
+                "Ok");
             
-            // Pause editor
-            //Debug.Break();
-            EditorApplication.isPlaying = false;
+            LevelDebugger.Instance.WriteToFile();
 
-            // end application if ok button pressed
-            
+                //Debug.Break();
+            EditorApplication.isPlaying = false;
             _errorFound = true;
         }
     }
@@ -136,17 +136,21 @@ public class LevelTesterAgent : MonoBehaviour
     private void IncrementGoalIndex(EventParam eventParam) 
     {
         _activeGoal++;
+        goalsCompleted += _activeGoal;
         //_activeSubGoal = 0; // reset sub goals count for each new goal
         //print("<color=cyan>Goal index: </color>" + _activeGoal);
     }
     
     private void IncrementSubGoalIndex(EventParam eventParam) 
     {
+        subGoalsCompleted ++;
+        
         if (_activeSubGoal < goalsList[_activeGoal].subGoals.Count)
         {
             _activeSubGoal++;
         }
-        else
+
+        else if (_activeSubGoal >= goalsList[_activeGoal].subGoals.Count)
         {
             _activeSubGoal = 0;
         }

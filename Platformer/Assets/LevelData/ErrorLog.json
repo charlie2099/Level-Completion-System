@@ -1,13 +1,7 @@
 {
-    "ObjectivesCompleted": 0,
-    "CollisionIssues": [
-        "No Issues Found!"
-    ],
-    "FallingIssues": [
-        "No Issues Found!"
-    ],
-    "TimeToCompleteIssues": [
-        "No Issues Found!"
-    ],
-    "CompletionStatus": "Level Completed"
+    "ActiveGoal": "Door1",
+    "ActiveSubGoal": "Key1",
+    "Error": "Agent's path may be obstructed",
+    "Solution": "Try moving the platforms closer together",
+    "CompletionStatus": "Level Is Not Completable"
 }

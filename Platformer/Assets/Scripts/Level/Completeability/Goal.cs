@@ -35,7 +35,7 @@ public class Goal : MonoBehaviour, IGoal
         return true;
     }
     
-    public void Collect()
+    public void Complete()
     {
         Destroy(gameObject);
     }

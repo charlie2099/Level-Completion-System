@@ -2,6 +2,6 @@
 {
     public interface IGoal
     {
-        void Collect();
+        void Complete();
     }
 }

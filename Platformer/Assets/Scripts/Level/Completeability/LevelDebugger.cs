@@ -41,16 +41,19 @@ public class LevelDebugger : MonoBehaviour
 
     private void Update()
     {
-        if (agent.goalsList[agent._activeGoal] != null)
+        if (agent.activeGoal < agent.goalsList.Count)
         {
-            goalText.text = "Goal: <color=lime>" + agent.goalsList[agent._activeGoal].name + "</color>";
-        }
+            if (agent.goalsList[agent.activeGoal] != null)
+            {
+                goalText.text = "Goal: <color=lime>" + agent.goalsList[agent.activeGoal].name + "</color>";
+            }
         
-        if (agent.goalsList[agent._activeGoal].subGoals[agent._activeSubGoal].goal != null)
-        {
-            subGoalText.text = "Sub-Goal: <color=cyan>" + agent.goalsList[agent._activeGoal].subGoals[agent._activeSubGoal].goal.name + "</color>";
+            if (agent.goalsList[agent.activeGoal].subGoals[agent.activeSubGoal].goal != null)
+            {
+                subGoalText.text = "Sub-Goal: <color=cyan>" + agent.goalsList[agent.activeGoal].subGoals[agent.activeSubGoal].goal.name + "</color>";
+            }
         }
-        
+
         goalsCompletedText.text    = "Goals completed: <color=lime>" + agent.goalsCompleted + "</color>";
         subGoalsCompletedText.text = "Sub-Goals completed: <color=cyan>" + agent.subGoalsCompleted + "</color>";
     }
@@ -58,10 +61,10 @@ public class LevelDebugger : MonoBehaviour
     public void WriteToFile()
     {
         ErrorLogData errorLogData = new ErrorLogData();
-        errorLogData.ActiveGoal       = agent.goalsList[agent._activeGoal].name;
-        errorLogData.ActiveSubGoal    = agent.goalsList[agent._activeGoal].subGoals[agent._activeSubGoal].goal.name;
+        errorLogData.ActiveGoal       = agent.goalsList[agent.activeGoal].name;
+        errorLogData.ActiveSubGoal    = agent.goalsList[agent.activeGoal].subGoals[agent.activeSubGoal].goal.name;
         errorLogData.Error            = "Agent's path may be obstructed";
-        errorLogData.Solution         = agent.goalsList[agent._activeGoal].subGoals[agent._activeSubGoal].goal.GetComponent<ErrorLog>().solutionText;
+        errorLogData.Solution         = agent.goalsList[agent.activeGoal].subGoals[agent.activeSubGoal].goal.GetComponent<ErrorLog>().solutionText;
         errorLogData.CompletionStatus = "Level Is Not Completable";
 
         _levelData = JsonUtility.ToJson(errorLogData, true);

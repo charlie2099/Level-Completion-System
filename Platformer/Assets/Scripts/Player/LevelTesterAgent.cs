@@ -15,11 +15,11 @@ public class LevelTesterAgent : MonoBehaviour
 
     private NavMeshAgent _agent;
     private Transform _target;
-    [HideInInspector] public int _activeGoal;
-    [HideInInspector] public int _activeSubGoal;
+    [HideInInspector] public int activeGoal;
+    [HideInInspector] public int activeSubGoal;
     [HideInInspector] public int goalsCompleted;
     [HideInInspector] public int subGoalsCompleted;
-    [HideInInspector] public bool _allGoalsComplete;
+    [HideInInspector] public bool allGoalsComplete;
     private bool _errorFound;
 
     private void OnEnable()
@@ -47,34 +47,28 @@ public class LevelTesterAgent : MonoBehaviour
 
     private void Update()
     {
-        if (_activeGoal < goalsList.Count)
+        if (activeGoal < goalsList.Count) 
         {
-            //print("Goals List count: " + goalsList.Count);
-            //print("Sub-goals count: " + goalsList[_activeGoal].subGoals.Count);
-            
             // If the active goals sub-goals are incomplete, set destination to the sub-goal destination
-            if (!goalsList[_activeGoal].subGoals[_activeSubGoal].isCompleted)
+            if (!goalsList[activeGoal].subGoals[activeSubGoal].isCompleted) 
             {
-                _agent.SetDestination(goalsList[_activeGoal].subGoals[_activeSubGoal].goal.transform.position);
-                /*var path = goalsList[_activeGoal].subGoals[_activeSubGoal].goal.transform.position;
-                if (AgentCanReachPosition(path))
-                {
-                    _agent.SetDestination(path);
-                }
-                else
-                {
-                    print("Agent can't reach goal");
-                }*/
+                _agent.SetDestination(goalsList[activeGoal].subGoals[activeSubGoal].goal.transform.position);
                 //print("<color=lime> Goal: </color>" + goalsList[_activeGoal].name + "<color=cyan> Sub-goal: </color>" + goalsList[_activeGoal].subGoals[_activeSubGoal].goal.name);
             }
         }
 
-        if (AllGoalsComplete() && !_allGoalsComplete)
+        if (AllGoalsComplete() && !allGoalsComplete)
         {
-            EditorUtility.DisplayDialog("Level Completion System Logger", "Level is completeable!", "Ok");
-            EditorApplication.isPlaying = false;
-            _allGoalsComplete = true;
+            StartCoroutine(PlayLevelCompletionDialog());
         }
+    }
+
+    private IEnumerator PlayLevelCompletionDialog()
+    {
+        yield return new WaitForSeconds(0.5f);
+        EditorUtility.DisplayDialog("Level Completion System Logger", "Level is completeable!", "Ok");
+        EditorApplication.isPlaying = false;
+        allGoalsComplete = true;
     }
     
     private void OnCollisionEnter(Collision col)
@@ -82,7 +76,7 @@ public class LevelTesterAgent : MonoBehaviour
         IGoal goal = col.gameObject.GetComponent<IGoal>();
         if (goal != null)
         {
-            goalsList[_activeGoal].subGoals[_activeSubGoal].isCompleted = true;
+            goalsList[activeGoal].subGoals[activeSubGoal].isCompleted = true;
             goal.Complete();
         }
     }
@@ -103,19 +97,12 @@ public class LevelTesterAgent : MonoBehaviour
     {
         if (_agent.velocity.magnitude < 0.05f && !_errorFound)
         {
-            /*EditorUtility.DisplayDialog("Level Completion System Logger", 
-                "[ERROR]: \n" +
-                "Agent cannot reach path, path may be obstructed. \n\n" + 
-                "Current [GOAL]: " + goalsList[_activeGoal].name + "\n" +
-                "Current [SUB-GOAL]: " + goalsList[_activeGoal].subGoals[_activeSubGoal].goal.name + "\n\n" +
-                "Suggested fix: ", "Ok");*/
-            
             EditorUtility.DisplayDialog("Level Completion System Logger", 
                 "[ERROR]: \n" +
                 "Agent cannot reach path, path may be obstructed. \n\n" + 
-                "Current [GOAL]: " + goalsList[_activeGoal].name + "\n" +
-                "Current [SUB-GOAL]: " + goalsList[_activeGoal].subGoals[_activeSubGoal].goal.name + "\n\n" +
-                "Suggested fix: \n" + goalsList[_activeGoal].subGoals[_activeSubGoal].goal.GetComponent<ErrorLog>().solutionText,
+                "Current [GOAL]: " + goalsList[activeGoal].name + "\n" +
+                "Current [SUB-GOAL]: " + goalsList[activeGoal].subGoals[activeSubGoal].goal.name + "\n\n" +
+                "Suggested fix: \n" + goalsList[activeGoal].subGoals[activeSubGoal].goal.GetComponent<ErrorLog>().solutionText,
                 "Ok");
             
             LevelDebugger.Instance.WriteToFile();
@@ -126,39 +113,24 @@ public class LevelTesterAgent : MonoBehaviour
         }
     }
 
-    private bool AgentCanReachPosition(Vector3 position)
-    {
-        NavMeshPath path = new NavMeshPath();
-        _agent.CalculatePath(position, path);
-        return path.status == NavMeshPathStatus.PathComplete;
-    }
-
     private void IncrementGoalIndex(EventParam eventParam) 
     {
-        _activeGoal++;
-        goalsCompleted += _activeGoal;
-        //_activeSubGoal = 0; // reset sub goals count for each new goal
-        //print("<color=cyan>Goal index: </color>" + _activeGoal);
+        activeGoal++;
+        goalsCompleted++;
     }
     
     private void IncrementSubGoalIndex(EventParam eventParam) 
     {
-        subGoalsCompleted ++;
+        subGoalsCompleted++;
         
-        if (_activeSubGoal < goalsList[_activeGoal].subGoals.Count)
+        if (activeSubGoal < goalsList[activeGoal].subGoals.Count-1)
         {
-            _activeSubGoal++;
+            activeSubGoal++;
         }
 
-        else if (_activeSubGoal >= goalsList[_activeGoal].subGoals.Count)
+        else if (activeSubGoal >= goalsList[activeGoal].subGoals.Count-1)
         {
-            _activeSubGoal = 0;
+            activeSubGoal = 0;
         }
-        
-        /*else if(_activeGoal < goalsList.Count)
-        {
-            _activeSubGoal = 0;
-        }*/
-        //print("<color=magenta>Sub-goal index: </color>" + _activeSubGoal);
     }
 }

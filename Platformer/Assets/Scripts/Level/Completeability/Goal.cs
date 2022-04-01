@@ -17,7 +17,7 @@ public class Goal : MonoBehaviour, IGoal
             if (IsAllSubGoalsComplete() && !isCompleted)
             {
                 EventManager.TriggerEvent("GoalCompleted", new EventParam());
-                print("<color=lime> Goal Completed </color>");
+                //print("<color=lime> Goal Completed </color>");
                 isCompleted = true;
             }
         }

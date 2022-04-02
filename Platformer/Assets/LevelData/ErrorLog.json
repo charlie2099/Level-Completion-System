@@ -1,7 +1,7 @@
 {
     "ActiveGoal": "Door1",
-    "ActiveSubGoal": "Key1",
+    "ActiveSubGoal": "Collectible1",
     "Error": "Agent's path may be obstructed",
-    "Solution": "Try moving the platforms closer together",
+    "Solution": "Try lowering the collectible",
     "CompletionStatus": "Level Is Not Completable"
 }

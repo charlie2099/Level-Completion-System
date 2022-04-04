@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Level.Completeability;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
@@ -91,7 +92,7 @@ public class LevelTesterAgent : MonoBehaviour
         if (activeGoal < goalsList.Count) 
         {
             // If the active goals sub-goals are incomplete, set destination to the sub-goal destination
-            if (!goalsList[activeGoal].subGoals[activeSubGoal].isCompleted) 
+            if (!goalsList[activeGoal].subGoalsList[activeSubGoal].isCompleted) 
             {
                 /*Vector3 target = goalsList[activeGoal].subGoals[activeSubGoal].goal.transform.position;
                 NavMeshPath navMeshPath = new NavMeshPath();
@@ -104,7 +105,7 @@ public class LevelTesterAgent : MonoBehaviour
                     print("Fail condition!");
                 }*/
 
-                _agent.SetDestination(goalsList[activeGoal].subGoals[activeSubGoal].goal.transform.position);
+                _agent.SetDestination(goalsList[activeGoal].subGoalsList[activeSubGoal].goal.transform.position);
                 //print("<color=lime> Goal: </color>" + goalsList[_activeGoal].name + "<color=cyan> Sub-goal: </color>" + goalsList[_activeGoal].subGoals[_activeSubGoal].goal.name);
             }
         }
@@ -128,7 +129,7 @@ public class LevelTesterAgent : MonoBehaviour
         IGoal goal = col.gameObject.GetComponent<IGoal>();
         if (goal != null)
         {
-            goalsList[activeGoal].subGoals[activeSubGoal].isCompleted = true;
+            goalsList[activeGoal].subGoalsList[activeSubGoal].isCompleted = true;
             goal.Complete();
         }
     }
@@ -150,16 +151,13 @@ public class LevelTesterAgent : MonoBehaviour
         if (_agent.velocity.magnitude < 0.05f && !_errorFound)
         {
             EditorUtility.DisplayDialog("Level Completion System Logger", 
-                "[ERROR]: \n" +
-                "Agent cannot reach path, path may be obstructed. \n\n" + 
+                "[ERROR]: \n" + "Agent cannot reach path, path may be obstructed. \n\n" + 
                 "Current [GOAL]: " + goalsList[activeGoal].name + "\n" +
-                "Current [SUB-GOAL]: " + goalsList[activeGoal].subGoals[activeSubGoal].goal.name + "\n\n" +
-                "Suggested fix: \n" + goalsList[activeGoal].subGoals[activeSubGoal].goal.GetComponent<ErrorLog>().solutionText,
+                "Current [SUB-GOAL]: " + goalsList[activeGoal].subGoalsList[activeSubGoal].goal.name + "\n\n" +
+                "Suggested fix: \n" + goalsList[activeGoal].subGoalsList[activeSubGoal].goal.GetComponent<ErrorLog>().solutionText,
                 "Ok");
             
             LevelDebugger.Instance.WriteToFile();
-
-                //Debug.Break();
             EditorApplication.isPlaying = false;
             _errorFound = true;
         }
@@ -175,12 +173,12 @@ public class LevelTesterAgent : MonoBehaviour
     {
         subGoalsCompleted++;
         
-        if (activeSubGoal < goalsList[activeGoal].subGoals.Count-1)
+        if (activeSubGoal < goalsList[activeGoal].subGoalsList.Count-1)
         {
             activeSubGoal++;
         }
 
-        else if (activeSubGoal >= goalsList[activeGoal].subGoals.Count-1)
+        else if (activeSubGoal >= goalsList[activeGoal].subGoalsList.Count-1)
         {
             activeSubGoal = 0;
         }

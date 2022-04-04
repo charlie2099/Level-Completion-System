@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Level.Completeability;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;

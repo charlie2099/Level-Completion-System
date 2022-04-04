@@ -1,24 +1,21 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class SubGoal : MonoBehaviour
+namespace Level.Completeability
 {
-    public Goal goal;
-    public int cost;
-    public bool isCompleted;
-    private bool _oneTimeCheck;
-
-    private void Update()
+    public class SubGoal : MonoBehaviour
     {
-        if (isCompleted && !_oneTimeCheck)
+        public Goal goal;
+        public int cost;
+        public bool isCompleted;
+        private bool _oneTimeCheck;
+
+        private void Update()
         {
-            EventManager.TriggerEvent("SubGoalCompleted", new EventParam());
-            //print("<color=cyan> Sub-Goal Completed </color>");
-            _oneTimeCheck = true;
+            if (isCompleted && !_oneTimeCheck)
+            {
+                EventManager.TriggerEvent("SubGoalCompleted", new EventParam());
+                _oneTimeCheck = true;
+            }
         }
     }
 }

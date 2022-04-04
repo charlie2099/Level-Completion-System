@@ -1,42 +1,35 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using Utility;
 
-public class Goal : MonoBehaviour, IGoal
+namespace Level.Completeability
 {
-    public List<SubGoal> subGoals = new List<SubGoal>();
-    public bool isCompleted;
+    public class Goal : MonoBehaviour, IGoal
+    {
+        public List<SubGoal> subGoalsList = new List<SubGoal>();
+        public bool isCompleted;
 
-    private void Update()
-    {
-        for (int i = 0; i < subGoals.Count; i++)
+        private void Update()
         {
-            if (IsAllSubGoalsComplete() && !isCompleted)
+            for (int i = 0; i < subGoalsList.Count; i++)
             {
-                EventManager.TriggerEvent("GoalCompleted", new EventParam());
-                //print("<color=lime> Goal Completed </color>");
-                isCompleted = true;
+                if (IsAllSubGoalsComplete() && !isCompleted)
+                {
+                    EventManager.TriggerEvent("GoalCompleted", new EventParam());
+                    isCompleted = true;
+                }
             }
         }
-    }
     
-    private bool IsAllSubGoalsComplete()
-    {
-        for (int i = 0; i < subGoals.Count; ++i) 
+        private bool IsAllSubGoalsComplete()
         {
-            if (subGoals[i].isCompleted == false)
-            {
-                return false;
-            }
+            return subGoalsList.All(subGoal => subGoal.isCompleted);
         }
-        return true;
-    }
     
-    public void Complete()
-    {
-        Destroy(gameObject);
+        public void Complete()
+        {
+            Destroy(gameObject);
+        }
     }
 }

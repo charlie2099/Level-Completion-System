@@ -116,11 +116,16 @@ public class LevelTesterAgent : MonoBehaviour
         }
     }
 
+
     private IEnumerator PlayLevelCompletionDialog()
     {
         yield return new WaitForSeconds(0.5f);
+
+        #if UNITY_EDITOR
         EditorUtility.DisplayDialog("Level Completion System Logger", "Level is completeable!", "Ok");
         EditorApplication.isPlaying = false;
+        #endif
+        
         allGoalsComplete = true;
     }
     
@@ -150,15 +155,21 @@ public class LevelTesterAgent : MonoBehaviour
     {
         if (_agent.velocity.magnitude < 0.05f && !_errorFound)
         {
+
+            #if UNITY_EDITOR
             EditorUtility.DisplayDialog("Level Completion System Logger", 
                 "[ERROR]: \n" + "Agent cannot reach path, path may be obstructed. \n\n" + 
                 "Current [GOAL]: " + goalsList[activeGoal].name + "\n" +
                 "Current [SUB-GOAL]: " + goalsList[activeGoal].subGoalsList[activeSubGoal].goal.name + "\n\n" +
                 "Suggested fix: \n" + goalsList[activeGoal].subGoalsList[activeSubGoal].goal.GetComponent<ErrorLog>().solutionText,
                 "Ok");
-            
+            #endif
+
             LevelDebugger.Instance.WriteToFile();
+
+            #if UNITY_EDITOR
             EditorApplication.isPlaying = false;
+            #endif
             _errorFound = true;
         }
     }

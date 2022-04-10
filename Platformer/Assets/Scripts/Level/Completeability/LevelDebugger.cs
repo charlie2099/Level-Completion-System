@@ -63,26 +63,6 @@ namespace Level.Completeability
             //string path = Application.persistentDataPath + filepath + "/ErrorLog.json";
             string path = Application.dataPath + filepath + "/ErrorLog.json";
             File.WriteAllText(path, _levelData);
-
-        
-        
-        
-            /*ErrorLogData errorLogData = new ErrorLogData();
-        errorLogData.CollisionIssues = new string[1];
-        errorLogData.FallingIssues = new string[1];
-        errorLogData.TimeToCompleteIssues = new string[1];
-
-        errorLogData.ObjectivesCompleted     = 0;
-        errorLogData.CollisionIssues[0]      = "No Issues Found!";
-        errorLogData.FallingIssues[0]        = "No Issues Found!";
-        errorLogData.TimeToCompleteIssues[0] = "No Issues Found!";
-        errorLogData.CompletionStatus        = "Level Completed";
-
-        _levelData = JsonUtility.ToJson(errorLogData, true);
-
-        //string path = Application.persistentDataPath + filepath + "/ErrorLog.json";
-        string path = Application.dataPath + filepath + "/ErrorLog.json";
-        File.WriteAllText(path, _levelData);*/
         }
     }
 }
